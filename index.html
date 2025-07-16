@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple E-commerce</title>
+</head>
+<body>
+  <h1>Login</h1>
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+
+  <h2>Product List</h2>
+  <button onclick="loadProducts()">View Products</button>
+  <ul id="productList"></ul>
+
+  <script>
+    let token = "";
+
+    async function login() {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value
+        })
+      });
+      const data = await res.json();
+      token = data.token;
+      alert("Logged in!");
+    }
+
+    async function loadProducts() {
+      const res = await fetch("http://localhost:5000/api/products");
+      const products = await res.json();
+      const list = document.getElementById("productList");
+      list.innerHTML = "";
+      products.forEach(p => {
+        const li = document.createElement("li");
+        li.innerText = `${p.name} - ₹${p.price}`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
